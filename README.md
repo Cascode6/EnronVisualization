@@ -37,12 +37,17 @@ are hidden when "other" is not hovered.
     
 This feedback, from fellow Udacity student Michael DuPont, was the second draft of my visualization. Getting such 
 broad feedback on a second draft made me realize that just the links would not tell the full story. I added the 
-stock and email dimple charts as stacked bar charts.
+stock and email dimple charts as stacked bar charts. 
+
+See here: https://github.com/Cascode6/EnronVisualization/commit/8569ca0a14b1581c2e86dc51adc1e7328e825470
+
     
     #3: "The transitions are too slow - how will I know they're going to change? Other could be a little more distinct,
     and the fact that so few POI's emailed eachother is very interesting. Maybe highlight that, after quantifying the 
     email features you used in the ML investigation."
     
+This feedback was on: https://github.com/Cascode6/EnronVisualization/commit/500deeb0c1debe78c6f513379c070f0198ea8e06
+
 My last feedback came from a former math teacher and IT/business professional. To address these concerns, I changed
 the dot circle to just persons of interest, and made the "other" dot bigger. I edited the details in the financial 
 chart so that they were clearer and reflected the financial features, and added more text to make sure hover functionality

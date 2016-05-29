@@ -4,12 +4,13 @@
     <head>
         <meta charset="utf-8">
         <title>Enron Data Visualization</title>
-        <script src="/d3.js"></script>
-        <script src="/dimple.min.js"></script>
+        <script src="/Users/Cas/Documents/Programming/D3/d3/d3.js"></script>
+        <script src="/Users/Cas/Documents/Programming/D3/d3/dimple.min.js"></script>
         <style type="text/css">
 		    circle:hover {
                 fill: orange;
             }
+			
 		</style>
         
     </head>
@@ -36,11 +37,10 @@
             <p>The data itself poses a few challenges to this hypothesis. After surveying the emails programmatically, it seems that the more likely someone is to be a POI and influential, the more possible alternative email addresses they have - and the fewer emails turned up that were linked to the official email address provided in the project financial summary data. For example, after a casual examination of a sample of the emails with at least one @enron address involved - either two or from - I counted 5 different email addresses that could be linked to POI Vince Kaminsky, all variations on his first and last name, sometimes with middle initial.</p>
             <p>
                 The addresses used for this visualization are either the official address supplied by the data or first initial, last name @enron.com, no punctuation, which was an abbreviation I found to be common within the company.</p>
-                <h2>Email Contact by POI Status</h2>
-                <div>Red lines are sent by POIs, blue are sent by other. Hover to see name, emails sent/received, and all unique links for which they were "sender".</div>
+                <h2>Email Quantities by POI Status</h2>
         </div>
         <script type="text/javascript">
-            d3.json("/visData2.json", function(error, json) {
+            d3.json("/Users/Cas/Documents/Programming/D3/d3/visData2.json", function(error, json) {
                 if (error) {return console.warn(error)};
                 data = json;
                 draw(data);
@@ -48,12 +48,65 @@
             
             function draw(data){
                 
+                
+                // // the chart areas
+                var another = dimple.newSvg("#nodes", 1000, 500);
+                var newsvg = dimple.newSvg("#features", 1000, 500);
+                
+                var stockChart = new dimple.chart(newsvg, data.stockData);
+                
+                var linkChart = new dimple.chart(another, data.poiemail);
+                
+                stockChart.setBounds(50, 5, 1000, 410);
+                stockChart.addCategoryAxis("x", ["Is POI", "Name"]);
+                stockChart.addMeasureAxis("y", "Value");
+                stockChart.addMeasureAxis("z", "Value");
+                stockChart.addLegend(50, 5, 1000, 20, "Right");
+                stockChart.addSeries("Feature", dimple.plot.bar);
+                var stockStory = stockChart.setStoryboard("Feature");
+                stockStory.frameDuration = 20000;
+                
+                stockChart.defaultColors = [
+                    new dimple.color("#2ecc71", "#27ae60", 1), // green
+                    new dimple.color("#e67e22", "#d35400", 1), // orange
+                    new dimple.color("#3498db", "#2980b9", 1), // blue
+                    new dimple.color("#e74c3c", "#c0392b", 1), // red
+                    new dimple.color("#1abc9c", "#16a085", 1), // turquoise
+                    new dimple.color("#9b59b6", "#8e44ad", 1), // purple
+                    new dimple.color("#95a5a6", "#7f8c8d", 1),  // gray
+                    new dimple.color("#f1c40f", "#f39c12", 1) // yellow
+                ];
+                
+                linkChart.setBounds(50, 10, 900, 410);
+                linkChart.addCategoryAxis("x", ["Is POI", "Name"]);
+                linkChart.addMeasureAxis("y", "Count");
+                linkChart.addMeasureAxis("z", "Total");
+                linkChart.addLegend(50, 10, 800, 30, "Right");
+                linkChart.addSeries(["Email Type"], dimple.plot.bar);
+                var linkStory = linkChart.setStoryboard("Email Type");
+                linkStory.frameDuration = 20000;
+                
+                linkChart.defaultColors = [
+                    new dimple.color("#3498db", "#2980b9", 1), // blue
+                    new dimple.color("#e67e22", "#d35400", 1), // orange
+                    new dimple.color("#95a5a6", "#7f8c8d", 1),  // gray
+                    new dimple.color("#e74c3c", "#c0392b", 1), // red
+                    new dimple.color("#2ecc71", "#27ae60", 1), // green
+                    new dimple.color("#9b59b6", "#8e44ad", 1), // purple
+                    new dimple.color("#f1c40f", "#f39c12", 1), // yellow
+                    new dimple.color("#1abc9c", "#16a085", 1) // turquoise
+                ];
+        
+                linkChart.draw();
+                stockChart.draw();
+                
                 var w = 500;
                     h = 50;
                     data;
                     width = 600;
                     height = 600;
-                    len = data.poinodes.length;
+                    len = data.nodes.length;
+                
                 
                 
                 var svg = d3.select("#nodes")
@@ -65,9 +118,10 @@
                 var originY = height / 2;
                 var CircleRadius = width / 2 - (width / 20);
                 
+                
 
                 var people = svg.selectAll(".node")
-                                    .data(data.poinodes)
+                                    .data(data.nodes)
                                     .enter()
                                     .append("circle")
                                     .attr("class", "node")
@@ -79,7 +133,14 @@
                                             return originY + ((CircleRadius) * Math.cos(2*Math.PI*i/len));
                                     })
                                     .attr("opacity", 1)
-                                    .attr("r", 5)
+                                    .attr("r", function(d){
+                                        if (d.Name === "other") {
+                                            return 10;
+                                        }
+                                        else {
+                                            return 7;
+                                        }
+                                    })
                                     .attr("stroke", function(d){
                                         if (d.Name === "other") {
                                             return "black";
@@ -90,7 +151,7 @@
                                     })
                                     .attr("fill", function(d) {
                                         if (d.Name === "other") {
-                                            return "lightgray";
+                                            return "steelblue";
                                         } else {
                                         if (d["Is POI"] === true) {   
                                             return "red";
@@ -105,7 +166,7 @@
                                     }  
                                     );
                 
-                var color;
+                
                 // draw emails between POI's
                 var emails = svg.selectAll(".link")
                                     .data(data.links)
@@ -170,27 +231,25 @@
                                             return "lightgray";
                                         }
                                     })
-                                    .attr("stroke-width", 2)
+                                    .attr("stroke-width", 3)
                                     .append("title")
                                     .text(function(d){
                                         return "Sender: "+d.sender_name+", Receiver: "+d.receiver_name;
                                     })
                                     ;
                 
-                
                     
                 svg.selectAll(".node")
                     .on("mouseover", function(){
-                        console.log(this.id);
-                        svg.selectAll("#"+this.id)
+                        svg.selectAll("line#"+this.id)
                             .attr("stroke", "orange")
-                            .attr("stroke-width", 1);
+                            .attr("stroke-width", 5);
                     })
                     .on("mouseout", function(){
                         if (this.id != "other") {
-                            svg.selectAll("#"+this.id)
+                            svg.selectAll("line#"+this.id)
                            .attr("stroke", "lightgray")
-                           .attr("stroke-width", 2);
+                           .attr("stroke-width", 3);
                         }
                         else {
                             svg.selectAll("#other")
@@ -198,60 +257,16 @@
                         }
                     });
                 
-                
-                
-                // // the chart areas
-                var another = dimple.newSvg("#nodes", 1000, 500);
-                var newsvg = dimple.newSvg("#features", 1000, 500);
-                console.log(data.poinodes)
-                
-                var stockChart = new dimple.chart(newsvg, data.stockData);
-                
-                var linkChart = new dimple.chart(another, data.poiemail);
-                
-                stockChart.setBounds(50, 5, 1000, 410);
-                stockChart.addCategoryAxis("x", ["Is POI", "Name"]);
-                stockChart.addMeasureAxis("y", "Value");
-                stockChart.addMeasureAxis("z", "Value");
-                stockChart.addLegend(50, 5, 1000, 20, "right");
-                stockChart.addSeries(["Stock Value"], dimple.plot.bar);
-                var stockStory = stockChart.setStoryboard("Stock Value");
-                stockStory.frameDuration = 50000;
-                
-                stockChart.defaultColors = [
-                    new dimple.color("#2ecc71", "#27ae60", 1), // green
-                    new dimple.color("#95a5a6", "#7f8c8d", 1),  // gray
-                    new dimple.color("#3498db", "#2980b9", 1), // blue
-                    new dimple.color("#e74c3c", "#c0392b", 1), // red
-                    new dimple.color("#1abc9c", "#16a085", 1), // turquoise
-                    new dimple.color("#9b59b6", "#8e44ad", 1), // purple
-                    new dimple.color("#e67e22", "#d35400", 1), // orange
-                    new dimple.color("#f1c40f", "#f39c12", 1) // yellow
-                ];
-                
-                linkChart.setBounds(50, 10, 900, 410);
-                linkChart.addCategoryAxis("x", ["Is POI", "Name"]);
-                linkChart.addMeasureAxis("y", "Count");
-                linkChart.addMeasureAxis("z", "Total");
-                linkChart.addLegend(50, 10, 800, 30, "right");
-                linkChart.addSeries(["Email Type"], dimple.plot.bar);
-                var linkStory = linkChart.setStoryboard("Email Type");
-                linkStory.frameDuration = 50000;
-                
-                linkChart.defaultColors = [
-                    new dimple.color("#3498db", "#2980b9", 1), // blue
-                    new dimple.color("#e67e22", "#d35400", 1), // orange
-                    new dimple.color("#95a5a6", "#7f8c8d", 1),  // gray
-                    new dimple.color("#e74c3c", "#c0392b", 1), // red
-                    new dimple.color("#2ecc71", "#27ae60", 1), // green
-                    new dimple.color("#9b59b6", "#8e44ad", 1), // purple
-                    new dimple.color("#f1c40f", "#f39c12", 1), // yellow
-                    new dimple.color("#1abc9c", "#16a085", 1) // turquoise
-                ];
-        
-                linkChart.draw();
-                stockChart.draw();
-                
+                var lastDiv = d3.select("body")
+                                .append("div")
+                                .attr("id", "lastDiv")
+                                .append("text")
+                                .text("POI Email Network")
+                                .style("font-size", "24px")
+                                .append("p")
+                                .append("text")
+                                .text("As you can see, although the mail counts number in the thousands for some POI's, the recipients of those emails are overwhelmingly non-POIs. Hover over the blue circle to see the emails sent from non-POI's to POIs; the spread of that network is far larger. Thus the finding that emailing a POI is not a good indicator of POI status.")
+                                .style("font-size", "16px");
             }
         </script>
     </body>

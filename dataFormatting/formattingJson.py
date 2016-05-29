@@ -198,7 +198,6 @@ for email in email_data:
                 if link["sender"] != i:
                     links.append(this_link)
                     
-print len(links)
 
 
 for person in data_dict:
@@ -241,7 +240,7 @@ for person in data_dict:
         chart_data.append(
             {
                 "Name": person,
-                "Stock Value":"Exercised",
+                "Feature":"Exercised Stock Option",
                 "Value": ex,
                 "Is POI":data_dict[person]["poi"]
             }
@@ -250,32 +249,30 @@ for person in data_dict:
         chart_data.append(
             {
                 "Name": person,
-                "Stock Value":"Other",
+                "Feature":"Total Stock Value",
                 "Value": tot - ex,
                 "Is POI":data_dict[person]["poi"]
             }
         )
+    if bon != 0:
         chart_data.append(
             {
                 "Name": person,
-                "Stock Value":"Total",
-                "Value": tot,
+                "Feature":"Bonus",
+                "Value": bon,
                 "Is POI":data_dict[person]["poi"]
             }
         )
-    
-    
-    if ex != 0 and tot != 0:
+    if sal != 0:
         chart_data.append(
-                {
-                    "Name": person,
-                    "Stock Value": "Exercised as Percent of Total",
-                    "Value": float(ex) / float(tot) * 100,
-                    "Is POI":data_dict[person]["poi"]
-                }
-            )
-    
-    
+            {
+                "Name": person,
+                "Feature":"Salary",
+                "Value": sal,
+                "Is POI":data_dict[person]["poi"]
+            }
+        )
+        
     
     if node["Email"] != "NaN":
         nodes.append(node)
@@ -310,7 +307,7 @@ for i, node in enumerate(nodes):
 
 poi_email_data = []
 non_nodes = []
-other_email_data = []
+just_poi_nodes = []
 varx = []
 
 for node in nodes:
@@ -343,8 +340,11 @@ for node in nodes:
         if node not in poi_nodes:
             poi_nodes.append(node)
             varx.append(node["Email"])
+        if node not in just_poi_nodes and node["Is POI"] == True:
+            just_poi_nodes.append(node)
     elif node["Name"] == "other":
         poi_nodes.append(node)
+        just_poi_nodes.append(node)
     
         
 for i, link in enumerate(linksForWeb):
@@ -362,12 +362,8 @@ for link in linksForWeb:
 
 
 the_data = {
-            "nodes": nodes,
-            "non_nodes" : non_nodes,
+            "nodes": just_poi_nodes,
             "links": cleaned_links,
-            "poinodes": poi_nodes,
-            "poilinks": just_poi_links,
-            "aboveav": above_average_nodes,
             "stockData": chart_data,
             "poiemail": poi_email_data
             } 

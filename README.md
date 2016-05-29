@@ -26,27 +26,27 @@ of POI status) did not hold up under scrutiny.
     #1: "I like the circle, but can you hover over the dots to see what email account they belong to?
     Also, what about directionality? Are these multiple emails, who are they going to, and how would I know?"
     
-    This first piece of feedback was from a friend with a background in design and pursuing a masters in 
-    English. All I had at this point was a circle of dots, and lines between them. In response to this critique, 
-    I added hover functionality to the dots, and decided to trim the data so that it reflected 
-    unique connections only. Link lines were changed to darker when the sender is hovered, and links to "other" 
-    are hidden when "other" is not hovered.
+This first piece of feedback was from a friend with a background in design and pursuing a masters in 
+English. All I had at this point was a circle of dots, and lines between them. In response to this critique, 
+I added hover functionality to the dots, and decided to trim the data so that it reflected 
+unique connections only. Link lines were changed to darker when the sender is hovered, and links to "other" 
+are hidden when "other" is not hovered.
     
     #2: "What are the dots without lines telling me? How does this relate to your project, and what are you trying
     to explain with this visualization?"
     
-    This feedback, from fellow Udacity student Michael DuPont, was the second draft of my visualization. Getting such 
-    broad feedback on a second draft made me realize that just the links would not tell the full story. I added the 
-    stock and email dimple charts as stacked bar charts.
+This feedback, from fellow Udacity student Michael DuPont, was the second draft of my visualization. Getting such 
+broad feedback on a second draft made me realize that just the links would not tell the full story. I added the 
+stock and email dimple charts as stacked bar charts.
     
     #3: "The transitions are too slow - how will I know they're going to change? Other could be a little more distinct,
     and the fact that so few POI's emailed eachother is very interesting. Maybe highlight that, after quantifying the 
     email features you used in the ML investigation."
     
-    My last feedback came from a former math teacher and IT/business professional. To address these concerns, I changed
-    the dot circle to just persons of interest, and made the "other" dot bigger. I edited the details in the financial 
-    chart so that they were clearer and reflected the financial features, and added more text to make sure hover functionality
-    was clear.
+My last feedback came from a former math teacher and IT/business professional. To address these concerns, I changed
+the dot circle to just persons of interest, and made the "other" dot bigger. I edited the details in the financial 
+chart so that they were clearer and reflected the financial features, and added more text to make sure hover functionality
+was clear.
     
 <h3>Resources</h3>
 In addition to the Data Visualization course on Udacity, the following sources
